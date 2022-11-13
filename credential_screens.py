@@ -1,11 +1,15 @@
 import mysql.connector
-mysql.connector.connection(
+connector = mysql.connector.connect(
     host = "sql.freedb.tech",
     username = "freedb_main_user2",
     password = "GcFhae@3x9j4h5V",
     database = "freedb_housekeepingmngmnt"
 )
 
+if(connector.is_connected()):
+    print("Database connected")
+else:
+    print("Connection falied")
 
 def login():
     # have to enter the username and password and the hotel uid when any type of user logs in
