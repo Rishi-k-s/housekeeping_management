@@ -5,6 +5,8 @@ mysql.connector.connection(
     password = "GcFhae@3x9j4h5V",
     database = "freedb_housekeepingmngmnt"
 )
+
+
 def login():
     # have to enter the username and password and the hotel uid when any type of user logs in
     #aftr logged in hav to return sm value
