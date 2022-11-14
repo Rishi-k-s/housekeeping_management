@@ -13,7 +13,7 @@ def hs_kep_dashboard():
     pass
 
 #super admin dashboard
-# they get the statistics of how the phousekeepers perform
+# they get the statistics of how the housekeepers perform
 #this is also wher they get to create housekeepers
 def s_admin_dashboard():
     pass

@@ -6,12 +6,18 @@ connector = mysql.connector.connect(
     database = "freedb_housekeepingmngmnt"
 )
 
+#DBMS connmads
+sql_cursor = connector.cursor()
+sql_cursor.execute("")
 if(connector.is_connected()):
     print("Database connected")
 else:
     print("Connection falied")
 
 def login():
+    get_username = input("Enter username: ")
+    get_password = input("Enter password: ")
+    
     # have to enter the username and password and the hotel uid when any type of user logs in
     #aftr logged in hav to return sm value
     pass
@@ -33,3 +39,4 @@ super admins add housekeeers for the place
    ?? do we neeed housekeeper user details
 
 """
+
