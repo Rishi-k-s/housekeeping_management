@@ -10,7 +10,8 @@ connector = mysql.connector.connect(
 #SQL cursor
 sql_cursor = connector.cursor()
 
-sql_cursor.execute("CREATE TABLE user_details") # celar error while creating table
+
+sql_cursor.execute("CREATE TABLE user_details()") # celar error while creating table
 
 show_tables = sql_cursor.execute("SHOW TABLES")
 print(show_tables)
