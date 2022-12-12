@@ -14,7 +14,7 @@ if(connector.is_connected()):
 else:
     print("Connection falied")
 
-def login():
+def login(get_username,get_password):
     get_username = input("Enter username: ")
     get_password = input("Enter password: ")
     
