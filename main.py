@@ -1,5 +1,5 @@
 import credential_screens
-import mysql
+import mysql.connector
 
 print("Loading...\n")
 
