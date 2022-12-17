@@ -10,3 +10,8 @@ SHOW TABLES;
 
 
 --@block
+INSERT INTO userdetails
+VALUES (UUID(),'u1','123','Sreejesh','SA');
+
+--@block
+SELECT * FROM userdetails
