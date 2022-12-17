@@ -34,12 +34,12 @@ def main_dashboard():
 ''')
     chek_new_user = input("Are you new here? (Y/n): ")
     if (chek_new_user == "y" or chek_new_user == "Y"):
-        credential_screens.signup()
+        credential_screens.credentials.signup()
     else:
         get_username = input("Enter username: ")
         print("Hii {},".format(get_username))
         get_password = input("Enter password: ")
-        credential_screens.login()
+        credential_screens.credentials.login()
 
 # the guest dashboard
 #guest could give review and ratings
