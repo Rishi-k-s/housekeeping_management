@@ -35,7 +35,7 @@ def login(username,password):
     getDetailsFromUser = sql_cursor.fetchall()
     for details in getDetailsFromUser:
         if(details[2] == password):
-            listedGetDetailsFromUser = [True,details[0],details[1],details[2],details[3],details[4]]
+            listedGetDetailsFromUser = [True,details[0],details[1],details[2],details[3],details[4],details[5]]
             #print([True,details[0],details[1],details[2],details[3],details[4]])
             return(listedGetDetailsFromUser)
     # have to enter the username and password and the hotel uid when any type of user logs in
@@ -66,6 +66,7 @@ def signup():
                 print("Use a different username: ")
         # sql_cursor.execute("SELECT username FROM userdetails WHERE username ='hotel1';")
         #"INSERT INTO TABLE userdeails VALUES (UUID(),u1,123,Sreejesh,SA);"
+        #69
         # print(sql_cursor.fetchall())
         get_passwd_signup = input("Enter password: ")
         while passCheck == False:
@@ -73,7 +74,7 @@ def signup():
             if(get_passwd_signup == get_pass_check):
                 passCheck = True
         if(passCheck ==  True):
-            sql_cursor.execute("INSERT INTO userdetails VALUES (UUID(),'{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole))
+            sql_cursor.execute("INSERT INTO userdetails (user_uid,username,password,name,user_role) VALUES (UUID(),'{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole))
             
     # ___________________
     # -----For USER------
@@ -104,13 +105,10 @@ def signup():
             if(get_passwd_signup == get_pass_check):
                 passCheck = True
         if(passCheck ==  True):
-            sql_cursor.execute("INSERT INTO userdetails VALUES (UUID(),'{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole))
+            sql_cursor.execute("INSERT INTO userdetails (user_uid,username,password,name,user_role) VALUES (UUID(),'{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole))
     #if the signup is 
 
 
-def make_hs_kep_user():
-    # the code for making house keeper
-    pass
 """
 Signup is only for super admin and user
 super admins add housekeeers for the place
@@ -121,51 +119,86 @@ super admins add housekeeers for the place
    ?? do we neeed housekeeper user details
 
 """
+# ----------SuperAdmin Functions----------
+def addOrRemoveRooms():
+    print("(1)Add Room\n(2)Remove Room")
+    getChooseRoomFunc = input("-->")
+    if(getChooseRoomFunc == "1"):
+        print(">>>Creating a new Room<<<")
+        getRoomName = input("Enter Room Name: ")
+        sql_cursor.execute("INSERT INTO hslocations (hsl_uid,sa_uid,place_name) VALUES (UUID(),'{}','{}');".format(listedGetDetailsFromUser[1],getRoomName))
+    elif(getChooseRoomFunc == "2"):
+        print("<Deleting Room>")
+        getRoomName = input("Enter Room Name: ")
+        sql_cursor.execute("DELETE FROM hslocations WHERE place_name='{}';".format(getRoomName))
+        print("the Room {} is deleted ".format(getRoomName))
 
+def addOrRemoveHouseKeepers():
+    print("(1)Add Housekeeper\n(2)Remove Housekeeper")
+    getChooseHkFunc = input("-->")
+    if(getChooseHkFunc == "1"):
+        print("~ Craete Housekeeper Account(s) ~")
+        get_Name_user = input("Enter Housekeeper Name: ")
+        print("\nAdding {} as Housekeeper".format(get_Name_user))
+        setUserRole = "HK"
+        passCheck = False
+        isUserPresent = False
+        while isUserPresent == False:
+            get_username_signup = input("Enter username: ")
+            sql_cursor.execute("SELECT username FROM userdetails WHERE username = '{}';".format(get_username_signup))
+            get_detais = sql_cursor.fetchall()
+            #print("Details: ",get_detais,",",bool(get_detais))
+            if(bool(get_detais)==False):
+                isUserPresent = True
+            else:
+                print("Smone is using that username already :/")
+                print("Use a different username: ")
+        get_passwd_signup = input("Enter password: ")
+        while passCheck == False:
+            get_pass_check = input("Re-enter password: ")
+            if(get_passwd_signup == get_pass_check):
+                passCheck = True
+        if(passCheck ==  True):
+            print()
+            print("Assign Room to {}".format(get_Name_user))
+            sql_cursor.execute("SELECT place_name FROM hslocations WHERE sa_uid = '{}';".format(listedGetDetailsFromUser[1]))
+            allRoomListOfTuple = sql_cursor.fetchall()
+            print("--Rooms--")
+            for eachRoom in allRoomListOfTuple:
+                print(eachRoom[0])
+            print("---------")
+            sql_cursor.execute("INSERT INTO userdetails VALUES (UUID(),'{}','{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole,listedGetDetailsFromUser[1]))
+            #Adding HK to Specified rooms
+            getRoomName = input("Enter Room Name: ")
+            sql_cursor.execute("SELECT hsl_uid FROM hslocations WHERE place_name = '{}';".format(getRoomName))
+            rawSqlPlaceUid = sql_cursor.fetchall()
+            PlaceUid = rawSqlPlaceUid[0][0]
+            #get user uid from user details
+            sql_cursor.execute("SELECT user_uid FROM userdetails WHERE username = '{}';".format(get_username_signup))
+            rawSqlHkUid = sql_cursor.fetchall()
+            hKUid = rawSqlHkUid[0][0]
+
+            #update the housekeeper uid in HK location table
+            sql_cursor.execute("UPDATE hslocations SET hk_uid ='{}' WHERE hsl_uid = '{}';".format(hKUid,PlaceUid))
+
+            print("Added Housekeeper Successfully")
+    elif(getChooseHkFunc == "2"):
+        print("<Deleting Housekeeper>")
+        getHKName = input("Enter Housekeeper Name: ")
+        sql_cursor.execute("DELETE FROM userdetails WHERE username='{}' AND user_role='{}';".format(getHKName,"HK"))
+        print("the user {} is deleted ".format(getHKName))
 # ========================================
 # ^^^^^^^^^^^^Functions end^^^^^^^^^^^^^^^
-# ________________________________________
 
 
 # ----------------------------------------
 # -----------User Dashboards--------------
 # ----------------------------------------
-def main_dashboard():
-    print('''
---   _   _                      _                   _                                                                           _   
---  | | | |                    | |                 (_)                                                                         | |  
---  | |_| | ___  _   _ ___  ___| | _____  ___ _ __  _ _ __   __ _   _ __ ___   __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
---  |  _  |/ _ \| | | / __|/ _ \ |/ / _ \/ _ \ '_ \| | '_ \ / _` | | '_ ` _ \ / _` | '_ \ / _` |/ _` |/ _ \ '_ ` _ \ / _ \ '_ \| __|
---  | | | | (_) | |_| \__ \  __/   <  __/  __/ |_) | | | | | (_| | | | | | | | (_| | | | | (_| | (_| |  __/ | | | | |  __/ | | | |_ 
---  \_| |_/\___/ \__,_|___/\___|_|\_\___|\___| .__/|_|_| |_|\__, | |_| |_| |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
---                                           | |             __/ |                               __/ |                              
---                                           |_|            |___/                               |___/                               
-''')
-    chek_new_user = input("Are you new here? (Y/n): ")
-    if (chek_new_user == "y" or chek_new_user == "Y"):
-        signup()
-    else:
-        print("Log In")
-        get_username = input("Enter username: ")
-        sql_cursor.execute("SELECT name FROM userdetails WHERE username = '{}'".format(get_username))
-        get_detais = sql_cursor.fetchall()
-        for tuple_name in get_detais:
-            for name in tuple_name:
-                print("Hii {},".format(name))
-        get_password = input("Enter password: ")
-        if(login(get_username,get_password)[0] == True and listedGetDetailsFromUser[-1] == "SA"):
-            s_admin_dashboard()
-        elif(login(get_username,get_password)[0] == True and listedGetDetailsFromUser[-1] == "U"):
-            guest_dashboard()
-        elif(login(get_username,get_password)[0] == True and listedGetDetailsFromUser[-1] == "HK"):
-            hs_kep_dashboard()
 
 # the guest dashboard
 #guest could give review and ratings
 def guest_dashboard():
     print("Guest Dashboard")
-    print("(1)View All reviews\n(1)Housekeeping reviews\n(3)User Reviews")
-    print("(4)Add/Remove Housekeeper\n(5)Add/Remove Rooms\n(6)Exit\n")
 
 #the housekeeper dashboard
 #house keepers should also be able to give reviews
@@ -176,7 +209,52 @@ def hs_kep_dashboard():
 # they get the statistics of how the housekeepers perform
 #this is also wher they get to create housekeepers
 def s_admin_dashboard():
-    print("Super admin Dashboard")
+    viewAdminDashboard = True
+    while viewAdminDashboard:
+        print("Super admin Dashboard")
+        print("(1)View All reviews\n(2)Housekeeping reviews\n(3)User Reviews")
+        print("(4)Add/Remove/View Housekeeper\n(5)Add/Remove/View Rooms\n(6)Exit\n")
+        getMenuInput = input("-->")
+        if(getMenuInput == "4"):
+            addOrRemoveHouseKeepers()
+        if(getMenuInput == "5"):
+            addOrRemoveRooms()
+        elif(getMenuInput == "6"):
+            viewAdminDashboard = False
+    # ========================================
+# ^^^^^^^^^^^Dashboards end^^^^^^^^^^^^^^^
 
 
-main_dashboard()
+# ----------------------------------------
+# ---------------MAIN MENU----------------
+# ----------------------------------------
+
+print('''
+     _   _                      _                   _                                                                           _   
+    | | | |                    | |                 (_)                                                                         | |  
+    | |_| | ___  _   _ ___  ___| | _____  ___ _ __  _ _ __   __ _   _ __ ___   __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+    |  _  |/ _ \| | | / __|/ _ \ |/ / _ \/ _ \ '_ \| | '_ \ / _` | | '_ ` _ \ / _` | '_ \ / _` |/ _` |/ _ \ '_ ` _ \ / _ \ '_ \| __|
+    | | | | (_) | |_| \__ \  __/   <  __/  __/ |_) | | | | | (_| | | | | | | | (_| | | | | (_| | (_| |  __/ | | | | |  __/ | | | |_ 
+    \_| |_/\___/ \__,_|___/\___|_|\_\___|\___| .__/|_|_| |_|\__, | |_| |_| |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                             | |             __/ |                               __/ |                              
+                                             |_|            |___/                               |___/                               
+''')
+chek_new_user = input("Are you new here? (Y/n): ")
+if (chek_new_user == "y" or chek_new_user == "Y"):
+    signup()
+else:
+    print("Log In")
+    get_username = input("Enter username: ")
+    sql_cursor.execute("SELECT name FROM userdetails WHERE username = '{}'".format(get_username))
+    get_detais = sql_cursor.fetchall()
+    for tuple_name in get_detais:
+        for name in tuple_name:
+            print("Hii {},".format(name))
+    get_password = input("Enter password: ")
+    check_login = login(get_username,get_password)
+    if(check_login[0] == True and listedGetDetailsFromUser[-2] == "SA"):
+        s_admin_dashboard()
+    elif(check_login[0] == True and listedGetDetailsFromUser[-2] == "U"):
+        guest_dashboard()
+    elif(check_login[0] == True and listedGetDetailsFromUser[-2] == "HK"):
+        hs_kep_dashboard()
