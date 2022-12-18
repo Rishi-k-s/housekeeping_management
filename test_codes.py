@@ -7,7 +7,11 @@
 #     pass
 
 
-import sys
+# import sys
 
-# 👇️ print all built-in module names
-print(sys.builtin_module_names)
+# # 👇️ print all built-in module names
+# print(sys.builtin_module_names)
+
+l1 = ["1"]
+
+print(bool(l1))
