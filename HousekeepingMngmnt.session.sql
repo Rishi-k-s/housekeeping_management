@@ -51,3 +51,16 @@ place_name VARCHAR(255) UNIQUE);
 --@block
 ALTER TABLE userdetails
 ADD sa_uid VARCHAR(255)
+
+--@block
+CREATE TABLE reviews(
+    review_uid VARCHAR(255) PRIMARY KEY,
+    hk_uid VARCHAR(255),
+    sa_uid VARCHAR(255),
+    dateAndTime DATETIME,
+    room int,
+    meal int,
+    hospitality int,
+    washroom int,
+    overall int,
+    remarks VARCHAR(255));

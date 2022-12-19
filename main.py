@@ -173,7 +173,7 @@ def addOrRemoveHouseKeepers():
             sql_cursor.execute("SELECT hsl_uid FROM hslocations WHERE place_name = '{}';".format(getRoomName))
             rawSqlPlaceUid = sql_cursor.fetchall()
             PlaceUid = rawSqlPlaceUid[0][0]
-            #get user uid from user details
+            #get hk uid from user details
             sql_cursor.execute("SELECT user_uid FROM userdetails WHERE username = '{}';".format(get_username_signup))
             rawSqlHkUid = sql_cursor.fetchall()
             hKUid = rawSqlHkUid[0][0]
@@ -187,6 +187,16 @@ def addOrRemoveHouseKeepers():
         getHKName = input("Enter Housekeeper Name: ")
         sql_cursor.execute("DELETE FROM userdetails WHERE username='{}' AND user_role='{}';".format(getHKName,"HK"))
         print("the user {} is deleted ".format(getHKName))
+
+#------------Guest Dashboard -------------
+def giveReviewsGuest():
+    print("")
+
+#----------Global Func------------------
+def viewGuestReviews():
+    pass
+
+
 # ========================================
 # ^^^^^^^^^^^^Functions end^^^^^^^^^^^^^^^
 
@@ -198,7 +208,18 @@ def addOrRemoveHouseKeepers():
 # the guest dashboard
 #guest could give review and ratings
 def guest_dashboard():
-    print("Guest Dashboard")
+    
+    viewGuestDashboard = True
+    while viewGuestDashboard:
+        print("Guest Dashboard")
+        print("(1) Give Reviews\n(2) View Reviews\n(3) exit")
+        getMenuInput = input("-->")
+        if(getMenuInput == "1"):
+            giveReviewsGuest()
+        if(getMenuInput == "2"):
+            viewGuestReviews()
+        elif(getMenuInput == "3"):
+            viewGuestDashboard = False
 
 #the housekeeper dashboard
 #house keepers should also be able to give reviews
@@ -223,7 +244,7 @@ def s_admin_dashboard():
             viewAdminDashboard = False
     # ========================================
 # ^^^^^^^^^^^Dashboards end^^^^^^^^^^^^^^^
-
+"""Have to work on reviews"""
 
 # ----------------------------------------
 # ---------------MAIN MENU----------------
@@ -243,18 +264,32 @@ chek_new_user = input("Are you new here? (Y/n): ")
 if (chek_new_user == "y" or chek_new_user == "Y"):
     signup()
 else:
-    print("Log In")
-    get_username = input("Enter username: ")
-    sql_cursor.execute("SELECT name FROM userdetails WHERE username = '{}'".format(get_username))
-    get_detais = sql_cursor.fetchall()
-    for tuple_name in get_detais:
-        for name in tuple_name:
-            print("Hii {},".format(name))
-    get_password = input("Enter password: ")
-    check_login = login(get_username,get_password)
-    if(check_login[0] == True and listedGetDetailsFromUser[-2] == "SA"):
-        s_admin_dashboard()
-    elif(check_login[0] == True and listedGetDetailsFromUser[-2] == "U"):
-        guest_dashboard()
-    elif(check_login[0] == True and listedGetDetailsFromUser[-2] == "HK"):
-        hs_kep_dashboard()
+    isLoggingIn = True
+    while isLoggingIn:
+        print("Log In")
+        get_username = input("Enter username: ")
+        sql_cursor.execute("SELECT name FROM userdetails WHERE username = '{}'".format(get_username))
+        get_detais = sql_cursor.fetchall()
+        if(bool(get_detais)==False):
+            print("This Account doesnt exist, Signup?\n")
+            print("(1)Signup\n(2)Login\n(3)Exit")
+            getSignUpChoice = input("-->")
+            if(getSignUpChoice == "1"):
+                signup()
+            elif(getSignUpChoice == "3"):
+                isLoggingIn = False
+        else:
+            for tuple_name in get_detais:
+                for name in tuple_name:
+                    print("Hii {},".format(name))
+            get_password = input("Enter password: ")
+            check_login = login(get_username,get_password)
+            if(check_login[0] == True and check_login[-2] == "SA"):
+                isLoggingIn = False
+                s_admin_dashboard()
+            elif(check_login[0] == True and check_login[-2] == "U"):
+                isLoggingIn = False
+                guest_dashboard()
+            elif(check_login[0] == True and check_login[-2] == "HK"):
+                isLoggingIn = False
+                hs_kep_dashboard()
