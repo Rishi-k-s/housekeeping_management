@@ -129,24 +129,43 @@ def main(argv):
 
 # if __name__ == "__main__":
 #   main(sys.argv[1:])
+# import pandas as pd
+# import mysql.connector
+# connector = mysql.connector.connect(
+#     host = "localhost",
+#     username = "root",
+#     password = "!Kno!#@%[]k",
+#     database = "housekeepingmngmnt",
+#     autocommit = True,
+# )
 
-import mysql.connector
-connector = mysql.connector.connect(
-    host = "localhost",
-    username = "root",
-    password = "!Kno!#@%[]k",
-    database = "housekeepingmngmnt",
-    autocommit = True,
-)
+
+# if(connector.is_connected()):
+#     print("Database connected")
+# else:
+#     print("Connection falied")
+
+# sql_cursor = connector.cursor()
+
+# # sql_cursor.execute("SELECT NOW()")
+# # getDate = sql_cursor.fetchall()[0][0]
+# # print(getDate)
+# sql_cursor.execute("SELECT * FROM userdetails;")
+# getdect= sql_cursor.fetchall()
+# df = pd.read_sql('SELECT * FROM userdetails;', con=connector)
+# print(df)
+
+# importing the module
+import pandas as pd
+  
+# creating a DataFrame
+dict = {'Name' : ['Martha', 'Tim', 'Rob', 'Georgia'],
+        'Maths' : [87, 91, 97, 95],
+        'Science' : [83, 99, 84, 76]}
+df = pd.DataFrame(dict)
+  
+# displaying the DataFrame
+df.style
+print(df)
 
 
-if(connector.is_connected()):
-    print("Database connected")
-else:
-    print("Connection falied")
-
-sql_cursor = connector.cursor()
-
-sql_cursor.execute("SELECT NOW()")
-getDate = sql_cursor.fetchall()[0][0]
-print(getDate)

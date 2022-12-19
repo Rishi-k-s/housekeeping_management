@@ -202,7 +202,7 @@ def giveReviewsGuest():
             for eachUid in listOfUids:
                 reviewList.append(eachUid)
             sql_cursor.execute("SELECT NOW()")
-            currentDateTime = sql_cursor.fetchall()
+            currentDateTime = sql_cursor.fetchall()[0][0]
             reviewList.append(currentDateTime)
             roomAvailable = True 
         except :
@@ -227,8 +227,16 @@ def giveReviewsGuest():
     print()
     getRevRemarks = input("Review\n(max:250 letters): ")
 
-    reviewList = reviewList+[getRevRoom,getRevMeal,getRevHospitality,getRevWashroom,getRevOverall,getRevRemarks]
+    # reviewList = reviewList+[getRevRoom,getRevMeal,getRevHospitality,getRevWashroom,getRevOverall,getRevRemarks]
     print(reviewList)
+    sql_cursor.execute(
+        "INSERT INTO reviews VALUES (UUID(),'{}','{}','{}','{}','{}','{}','{}','{}','{}','{}') ;"
+        .format(
+            reviewList[0],reviewList[1],reviewList[2],reviewList[3],
+            reviewList[4],reviewList[5],reviewList[6],reviewList[7],
+            reviewList[8],reviewList[9]
+            )
+    )
 
 
 #----------Global Func------------------
