@@ -64,3 +64,22 @@ CREATE TABLE reviews(
     washroom int,
     overall int,
     remarks VARCHAR(255));
+
+--@block
+INSERT INTO reviews VALUES (
+    UUID(),
+    '92f92be3-7ece-11ed-b765-5811227fcdd6',
+    '3580e648-7ecd-11ed-b765-5811227fcdd6',
+    '2022-12-19 09:29:10',
+    8,
+    9,
+    7,
+    10,
+    7,
+    "Nice Place"
+    )
+
+--@block
+ALTER TABLE reviews
+ADD COLUMN room_uid VARCHAR(255)
+AFTER sa_uid;

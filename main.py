@@ -75,6 +75,7 @@ def signup():
                 passCheck = True
         if(passCheck ==  True):
             sql_cursor.execute("INSERT INTO userdetails (user_uid,username,password,name,user_role) VALUES (UUID(),'{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole))
+            login()
             
     # ___________________
     # -----For USER------
@@ -190,7 +191,45 @@ def addOrRemoveHouseKeepers():
 
 #------------Guest Dashboard -------------
 def giveReviewsGuest():
-    print("")
+    print("Give Review\n")
+    roomAvailable = False
+    while roomAvailable == False:
+        try:
+            getRoomName = input("Enter Room Name: ")
+            sql_cursor.execute("SELECT hk_uid,sa_uid,hsl_uid FROM hslocations WHERE place_name = '{}';".format(getRoomName))
+            reviewList = []
+            listOfUids = sql_cursor.fetchall()[0]
+            for eachUid in listOfUids:
+                reviewList.append(eachUid)
+            sql_cursor.execute("SELECT NOW()")
+            currentDateTime = sql_cursor.fetchall()
+            reviewList.append(currentDateTime)
+            roomAvailable = True 
+        except :
+            # print(ValueError)
+            print("The entered room is not available")
+    # sql_cursor.execute("SELECT sa_uid,hk_uid,place_name,hsl_uid FROM hslocations WHERE place_name = '{}';".format(getRoomName))
+    # allRoomListOfTuple = sql_cursor.fetchall()
+    # print("--Rooms--")
+    # for eachRoom in allRoomListOfTuple:
+    #     print(eachRoom[0])
+    # print("---------")
+    print("TO skip any question press enter")
+    getRevRoom = int(input("Was the room clean?(out of 10) : "))
+    print()
+    getRevMeal = int(input("Enjoyed the meal?(out of 10) : "))
+    print()
+    getRevHospitality = int(input("Was the staff friendly and helpful?(out of 10) : "))
+    print()
+    getRevWashroom = int(input("Cleanliness of the restrooms(out of 10) : "))
+    print()
+    getRevOverall = int(input("Was the staff friendly and helpful?(out of 10) : "))
+    print()
+    getRevRemarks = input("Review\n(max:250 letters): ")
+
+    reviewList = reviewList+[getRevRoom,getRevMeal,getRevHospitality,getRevWashroom,getRevOverall,getRevRemarks]
+    print(reviewList)
+
 
 #----------Global Func------------------
 def viewGuestReviews():
