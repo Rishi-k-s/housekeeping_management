@@ -156,16 +156,20 @@ def main(argv):
 # print(df)
 
 # importing the module
-import pandas as pd
+# import pandas as pd
   
-# creating a DataFrame
-dict = {'Name' : ['Martha', 'Tim', 'Rob', 'Georgia'],
-        'Maths' : [87, 91, 97, 95],
-        'Science' : [83, 99, 84, 76]}
-df = pd.DataFrame(dict)
+# # creating a DataFrame
+# dict = {'Name' : ['Martha', 'Tim', 'Rob', 'Georgia'],
+#         'Maths' : [87, 91, 97, 95],
+#         'Science' : [83, 99, 84, 76]}
+# df = pd.DataFrame(dict)
   
-# displaying the DataFrame
-df.style
-print(df)
+# # displaying the DataFrame
+# df.style
+# print(df)
 
+import tabulate
 
+table = [["Sreejesh",7],["BABU",6],["Sui",3]]
+headers = ["Users", "Meal"]
+print(tabulate.tabulate(table, headers, tablefmt="rounded_grid"))

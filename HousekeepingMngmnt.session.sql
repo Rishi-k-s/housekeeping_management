@@ -27,6 +27,8 @@ CREATE TABLE userdetails(
 )
 --@block
 SELECT * FROM userdetails
+--@block
+SELECT dateAndTime,room,meal,hospitality,washroom,overall,remarks FROM reviews;
 
 --@block
 SHOW INDEX FROM userdetails
@@ -83,3 +85,16 @@ INSERT INTO reviews VALUES (
 ALTER TABLE reviews
 ADD COLUMN room_uid VARCHAR(255)
 AFTER sa_uid;
+
+--@block
+ALTER TABLE reviews
+ADD COLUMN user_uid VARCHAR(255)
+AFTER sa_uid;
+
+--@block
+UPDATE reviews
+SET user_uid = '5706b3b6-7ecd-11ed-b765-5811227fcdd6';
+
+--@block
+ALTER TABLE reviews
+CHANGE user_uid user_uid VARCHAR(255) AFTER room_uid;

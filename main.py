@@ -1,5 +1,6 @@
 
 import mysql.connector
+import tabulate
 
 # ----------------------------------------
 # --------Connecting TO datadase----------
@@ -36,7 +37,7 @@ def login(username,password):
     for details in getDetailsFromUser:
         if(details[2] == password):
             listedGetDetailsFromUser = [True,details[0],details[1],details[2],details[3],details[4],details[5]]
-            #print([True,details[0],details[1],details[2],details[3],details[4]])
+            # print([True,details[0],details[1],details[2],details[3],details[4]])
             return(listedGetDetailsFromUser)
     # have to enter the username and password and the hotel uid when any type of user logs in
     #aftr logged in hav to return sm value
@@ -75,7 +76,7 @@ def signup():
                 passCheck = True
         if(passCheck ==  True):
             sql_cursor.execute("INSERT INTO userdetails (user_uid,username,password,name,user_role) VALUES (UUID(),'{}','{}','{}','{}');".format(get_username_signup,get_passwd_signup,get_Name_user,setUserRole))
-            login()
+
             
     # ___________________
     # -----For USER------
@@ -126,8 +127,16 @@ def addOrRemoveRooms():
     getChooseRoomFunc = input("-->")
     if(getChooseRoomFunc == "1"):
         print(">>>Creating a new Room<<<")
-        getRoomName = input("Enter Room Name: ")
-        sql_cursor.execute("INSERT INTO hslocations (hsl_uid,sa_uid,place_name) VALUES (UUID(),'{}','{}');".format(listedGetDetailsFromUser[1],getRoomName))
+        
+        isName = False
+        while isName == False:
+            try:
+                getRoomName = input("Enter Room Name: ")
+                sql_cursor.execute("INSERT INTO hslocations (hsl_uid,sa_uid,place_name) VALUES (UUID(),'{}','{}');".format(listedGetDetailsFromUser[1],getRoomName))
+                print("\nRoom Added\n")
+                isName = True
+            except:
+                print("The name is taken")
     elif(getChooseRoomFunc == "2"):
         print("<Deleting Room>")
         getRoomName = input("Enter Room Name: ")
@@ -196,11 +205,13 @@ def giveReviewsGuest():
     while roomAvailable == False:
         try:
             getRoomName = input("Enter Room Name: ")
+            userUid = listedGetDetailsFromUser[1]
             sql_cursor.execute("SELECT hk_uid,sa_uid,hsl_uid FROM hslocations WHERE place_name = '{}';".format(getRoomName))
             reviewList = []
             listOfUids = sql_cursor.fetchall()[0]
             for eachUid in listOfUids:
                 reviewList.append(eachUid)
+            reviewList.append(userUid)
             sql_cursor.execute("SELECT NOW()")
             currentDateTime = sql_cursor.fetchall()[0][0]
             reviewList.append(currentDateTime)
@@ -227,21 +238,38 @@ def giveReviewsGuest():
     print()
     getRevRemarks = input("Review\n(max:250 letters): ")
 
-    # reviewList = reviewList+[getRevRoom,getRevMeal,getRevHospitality,getRevWashroom,getRevOverall,getRevRemarks]
-    print(reviewList)
+    reviewList = reviewList+[getRevRoom,getRevMeal,getRevHospitality,getRevWashroom,getRevOverall,getRevRemarks]
+    # print(reviewList)
     sql_cursor.execute(
-        "INSERT INTO reviews VALUES (UUID(),'{}','{}','{}','{}','{}','{}','{}','{}','{}','{}') ;"
+        "INSERT INTO reviews VALUES (UUID(),'{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}') ;"
         .format(
             reviewList[0],reviewList[1],reviewList[2],reviewList[3],
             reviewList[4],reviewList[5],reviewList[6],reviewList[7],
-            reviewList[8],reviewList[9]
+            reviewList[8],reviewList[9],reviewList[10]
             )
     )
+    print("✨ Review given successfully")
+    
+def viewGuestReviews():
+    multipleRevList = []
+    print("Previous Reviews")
+    sql_cursor.execute(
+        "SELECT dateAndTime,room,meal,hospitality,washroom,overall,remarks FROM reviews WHERE user_uid = '{}';".format(listedGetDetailsFromUser[1])
+        )
+    rawGuestDataSql = sql_cursor.fetchall()
+    if(bool(rawGuestDataSql) == False):
+        print("You Havnt done any reviews\n")
+        print("Do some reviews to show up here")
+    for eachReview in rawGuestDataSql:
+        multipleRevList.append(eachReview)#Append as a list of tuple
+    print(multipleRevList)
+    headers = ['Date and time',"Room facilities","Meal","Friendliness","washroom","overall","remarks"]
+    print(tabulate.tabulate(multipleRevList, headers, tablefmt="rounded_grid"))
+        
 
 
 #----------Global Func------------------
-def viewGuestReviews():
-    pass
+
 
 
 # ========================================
@@ -267,6 +295,8 @@ def guest_dashboard():
             viewGuestReviews()
         elif(getMenuInput == "3"):
             viewGuestDashboard = False
+            sql_cursor.close()
+            connector.close()
 
 #the housekeeper dashboard
 #house keepers should also be able to give reviews
@@ -288,6 +318,8 @@ def s_admin_dashboard():
         if(getMenuInput == "5"):
             addOrRemoveRooms()
         elif(getMenuInput == "6"):
+            sql_cursor.close()
+            connector.close()
             viewAdminDashboard = False
     # ========================================
 # ^^^^^^^^^^^Dashboards end^^^^^^^^^^^^^^^
@@ -313,8 +345,8 @@ if (chek_new_user == "y" or chek_new_user == "Y"):
 else:
     isLoggingIn = True
     while isLoggingIn:
-        print("Log In")
-        get_username = input("Enter username: ")
+        print("🔑 Log In\n")
+        get_username = input("📄 Enter username: ")
         sql_cursor.execute("SELECT name FROM userdetails WHERE username = '{}'".format(get_username))
         get_detais = sql_cursor.fetchall()
         if(bool(get_detais)==False):
@@ -329,7 +361,7 @@ else:
             for tuple_name in get_detais:
                 for name in tuple_name:
                     print("Hii {},".format(name))
-            get_password = input("Enter password: ")
+            get_password = input("🔒 Enter password: ")
             check_login = login(get_username,get_password)
             if(check_login[0] == True and check_login[-2] == "SA"):
                 isLoggingIn = False
