@@ -31,6 +31,9 @@ SELECT * FROM userdetails
 SELECT dateAndTime,room,meal,hospitality,washroom,overall,remarks FROM reviews;
 
 --@block
+SELECT * FROM reviews;
+
+--@block
 SHOW INDEX FROM userdetails
 
 --@block
@@ -98,3 +101,17 @@ SET user_uid = '5706b3b6-7ecd-11ed-b765-5811227fcdd6';
 --@block
 ALTER TABLE reviews
 CHANGE user_uid user_uid VARCHAR(255) AFTER room_uid;
+
+--@block
+SELECT AVG(room),AVG(meal),AVG(hospitality),AVG(washroom),AVG(overall) FROM reviews;
+
+--@block
+SELECT user_uid,username
+FROM reviews NATURAL JOIN userdetails;
+
+--@block
+SELECT reviews.user_uid,userdetails.username,reviews.remarks
+FROM reviews
+INNER JOIN userdetails
+ON reviews.user_uid=userdetails.user_uid
+WHERE reviews.hk_uid ="92f92be3-7ece-11ed-b765-5811227fcdd6";

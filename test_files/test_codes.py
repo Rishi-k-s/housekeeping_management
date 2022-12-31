@@ -157,6 +157,7 @@ def main(argv):
 
 # importing the module
 # import pandas as pd
+#import numpy
   
 # # creating a DataFrame
 # dict = {'Name' : ['Martha', 'Tim', 'Rob', 'Georgia'],
@@ -168,8 +169,32 @@ def main(argv):
 # df.style
 # print(df)
 
-import tabulate
+# import tabulate
 
-table = [["Sreejesh",7],["BABU",6],["Sui",3]]
-headers = ["Users", "Meal"]
-print(tabulate.tabulate(table, headers, tablefmt="rounded_grid"))
+# table = [["Sreejesh",7],["BABU",6],["Sui",3]]
+# headers = ["Users", "Meal"]
+# print(tabulate.tabulate(table, headers, tablefmt="rounded_grid"))
+
+# x = 'a'*5
+# print(x)
+# y = [x[a] for a,b in enumerate(x) if a%2==0]
+# print(y)
+# z = len(y)
+# print(z)
+
+# # define a function to calculate the golden ratio
+# def golden_ratio(n):
+#   return (1 + (5 ** 0.5)) / 2
+
+# # calculate the golden ratio
+# ratio = golden_ratio(5)
+
+# # print the golden ratio
+# print(ratio)
+
+a = "2222"
+f = ["Year ,0,2 at All the best"]
+a = a.split("2")
+print(a)
+b = a[0] + ". " +a[1] +". "+a[3]
+print(b)

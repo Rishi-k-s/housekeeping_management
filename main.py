@@ -28,11 +28,14 @@ sql_cursor = connector.cursor()
 
 
 # ----------------------------------------
-# --------Function starts from here-------
+# --------Functions starts from here------
 # ----------------------------------------
+
+#---------Login and SignUp----------------
+
 def login(username,password):
-    sql_cursor.execute("SELECT * FROM userdetails WHERE username = '{}'".format(username))
     global listedGetDetailsFromUser
+    sql_cursor.execute("SELECT * FROM userdetails WHERE username = '{}'".format(username))
     getDetailsFromUser = sql_cursor.fetchall()
     for details in getDetailsFromUser:
         if(details[2] == password):
@@ -198,7 +201,52 @@ def addOrRemoveHouseKeepers():
         sql_cursor.execute("DELETE FROM userdetails WHERE username='{}' AND user_role='{}';".format(getHKName,"HK"))
         print("the user {} is deleted ".format(getHKName))
 
-#------------Guest Dashboard -------------
+def viewAdminReviews():
+    multipleAvgRevList = []
+    print("Reviews")
+    print("[1] Average\n[2]Remarks\n[3]Roomvise Review\n[4]Full Review")
+    getTypeReview = input("Enter what kindda rev ya want?\n-->")
+    if(getTypeReview == "1"):
+        print("Showing the average data")
+        sql_cursor.execute("SELECT AVG(room),AVG(meal),AVG(hospitality),AVG(washroom),AVG(overall) FROM reviews;")
+        rawAvgRevDataSql = sql_cursor.fetchall()
+        if(bool(rawAvgRevDataSql) == False):
+            print("Guests Havnt done any reviews :/\n")
+        for eachAvgReview in rawAvgRevDataSql:
+            multipleAvgRevList.append(eachAvgReview)#Append as a list of tuple
+        print(multipleAvgRevList)
+        headers = ["Room facilities","Meal","Friendliness","washroom","overall"]
+        print(tabulate.tabulate(multipleAvgRevList, headers, tablefmt="rounded_grid"))
+    elif(getTypeReview == "2"):
+        multipleRemarks =[]
+        print("Remarks")
+        # sql_cursor.execute("SELECT user_uid,remarks FROM reviews;")
+        # rawRemarkRevDataSql = sql_cursor.fetchall()
+        # sql_cursor.execute("SELECT user_uid,remarks FROM reviews;")
+        sql_cursor.execute("SELECT reviews.user_uid,userdetails.username,reviews.remarks FROM reviews INNER JOIN userdetails ON reviews.user_uid=userdetails.user_uid;")
+        rawRemarkRevDataSql = sql_cursor.fetchall()
+        if(bool(rawRemarkRevDataSql) == False):
+            print("Guests Havnt done any reviews :/\n")
+        for eachAvgReview in rawRemarkRevDataSql:
+            multipleRemarks.append((eachAvgReview[1],eachAvgReview[2]))#Append as a list of tuple
+        print(multipleRemarks)
+        headers = ["Guest","remarks"]
+        print(tabulate.tabulate(multipleRemarks, headers, tablefmt="rounded_grid"))
+    #so the sa can choose which type of rev they want avg, only the overall or the remars or  full
+    # sql_cursor.execute(
+    #     "SELECT dateAndTime,room,meal,hospitality,washroom,overall,remarks FROM reviews WHERE sa_uid = '{}';".format(listedGetDetailsFromUser[1])
+    #     )
+    # rawGuestDataSql = sql_cursor.fetchall()
+    # if(bool(rawGuestDataSql) == False):
+    #     print("You Havnt done any reviews\n")
+    #     print("Do some reviews to show up here")
+    # for eachReview in rawGuestDataSql:
+    #     multipleRevList.append(eachReview)#Append as a list of tuple
+    # print(multipleRevList)
+    # headers = ['Date and time',"Room facilities","Meal","Friendliness","washroom","overall","remarks"]
+    # print(tabulate.tabulate(multipleRevList, headers, tablefmt="rounded_grid"))
+
+#------------Guest Functions -------------
 def giveReviewsGuest():
     print("Give Review\n")
     roomAvailable = False
@@ -234,7 +282,7 @@ def giveReviewsGuest():
     print()
     getRevWashroom = int(input("Cleanliness of the restrooms(out of 10) : "))
     print()
-    getRevOverall = int(input("Was the staff friendly and helpful?(out of 10) : "))
+    getRevOverall = int(input("overall impression?(out of 10) : "))
     print()
     getRevRemarks = input("Review\n(max:250 letters): ")
 
@@ -313,9 +361,11 @@ def s_admin_dashboard():
         print("(1)View All reviews\n(2)Housekeeping reviews\n(3)User Reviews")
         print("(4)Add/Remove/View Housekeeper\n(5)Add/Remove/View Rooms\n(6)Exit\n")
         getMenuInput = input("-->")
-        if(getMenuInput == "4"):
+        if(getMenuInput == "1"):
+            viewAdminReviews()
+        elif(getMenuInput == "4"):
             addOrRemoveHouseKeepers()
-        if(getMenuInput == "5"):
+        elif(getMenuInput == "5"):
             addOrRemoveRooms()
         elif(getMenuInput == "6"):
             sql_cursor.close()
@@ -339,6 +389,7 @@ print('''
                                              | |             __/ |                               __/ |                              
                                              |_|            |___/                               |___/                               
 ''')
+#General Purpouse Software??
 chek_new_user = input("Are you new here? (Y/n): ")
 if (chek_new_user == "y" or chek_new_user == "Y"):
     signup()
@@ -372,3 +423,5 @@ else:
             elif(check_login[0] == True and check_login[-2] == "HK"):
                 isLoggingIn = False
                 hs_kep_dashboard()
+
+                ##Add THe Cursor and db exits
