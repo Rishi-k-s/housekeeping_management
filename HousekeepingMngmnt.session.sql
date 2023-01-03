@@ -128,6 +128,12 @@ ON userdetails.user_uid =hslocations.hk_uid
 WHERE userdetails.sa_uid = '7088951b-8aa2-11ed-ab30-5811227fcdd6';
 
 --@block
+SELECT userdetails.name,reviews.dateAndTime,reviews.room,reviews.meal,reviews.hospitality,reviews.washroom,reviews.overall,reviews.remarks 
+FROM reviews 
+INNER JOIN userdetails
+ON reviews.user_uid = userdetails.user_uid
+WHERE reviews.sa_uid = '{}';
+--@block
 DELETE FROM userdetails;
 
 --@block

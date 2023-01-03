@@ -126,15 +126,15 @@ super admins add housekeeers for the place
 
 """
 # ----------SuperAdmin Functions----------
-def addOrRemoveRooms():
-    print("(1)Add Room\n(2)Remove Room")
+def addRemoveViewRooms():
+    print("(1)Add Room\n(2)Remove Room\n(3)View Rooms")
     getChooseRoomFunc = input("-->")
     if(getChooseRoomFunc == "1"):
         print(">>>Creating a new Room<<<")  
         isName = False
         while isName == False:
             try:
-                getRoomName = input("Enter Room Name: ")
+                getRoomName = input("Enter Room Username: ")
                 sql_cursor.execute("INSERT INTO hslocations (hsl_uid,sa_uid,place_name) VALUES (UUID(),'{}','{}');".format(listedGetDetailsFromUser[1],getRoomName))
                 time.sleep(0.6)
                 print("\nRoom Added\n")
@@ -146,8 +146,16 @@ def addOrRemoveRooms():
         print("<Deleting Room>")
         getRoomName = input("Enter Room Name: ")
         sql_cursor.execute("DELETE FROM hslocations WHERE place_name='{}';".format(getRoomName))
-        print("the Room {} is deleted ".format(getRoomName))
+        print("the Room {} is deleted \n".format(getRoomName))
         time.sleep(1.5)
+    elif(getChooseRoomFunc == "3"):
+        sql_cursor.execute("SELECT place_name FROM hslocations WHERE sa_uid = '{}';".format(listedGetDetailsFromUser[1]))
+        allRoomListOfTuple = sql_cursor.fetchall()
+        print("--Rooms--")
+        for eachRoom in allRoomListOfTuple:
+            print(eachRoom[0])
+        print("---------")
+        time.sleep(0.5)
 
 def addRemoveViewHouseKeepers():
     print("(1)Add Housekeeper\n(2)Remove Housekeeper\n(3)View Housekeepers")
@@ -202,12 +210,16 @@ def addRemoveViewHouseKeepers():
             print()
     elif(getChooseHkFunc == "2"):
         print("<Deleting Housekeeper>")
-        getHKName = input("Enter Housekeeper Name: ")
+        getHKName = input("Enter Housekeeper Username: ")
+        print()
         sql_cursor.execute("DELETE FROM userdetails WHERE username='{}' AND user_role='{}';".format(getHKName,"HK"))
-        print("the user {} is deleted ".format(getHKName))
+        time.sleep(0.4)
+        print("❎ the user {} is deleted ".format(getHKName))
+        time.sleep(0.5)
+        print()
     elif(getChooseHkFunc == "3"):
         namePlaceList = []
-        sql_cursor.execute("SELECT userdetails.name,hslocations.place_name FROM userdetails INNER JOIN hslocations ON userdetails.user_uid =hslocations.hk_uid WHERE userdetails.sa_uid = '7088951b-8aa2-11ed-ab30-5811227fcdd6';".format(listedGetDetailsFromUser[1]))
+        sql_cursor.execute("SELECT userdetails.name,hslocations.place_name FROM userdetails INNER JOIN hslocations ON userdetails.user_uid =hslocations.hk_uid WHERE userdetails.sa_uid = '{}';".format(listedGetDetailsFromUser[1]))
         getNamePlaceNameFromDB = sql_cursor.fetchall()
         for eachNamePlaceFromDB in getNamePlaceNameFromDB:
             namePlaceList.append(eachNamePlaceFromDB)
@@ -216,9 +228,10 @@ def addRemoveViewHouseKeepers():
         print(tabulate.tabulate(namePlaceList, headers, tablefmt="rounded_grid"))
         time.sleep(0.6)
 def viewAdminReviews():
+    #so the sa can choose which type of rev they want avg, only the overall or the remars or  full
     multipleAvgRevList = []
     print("Reviews")
-    print("[1] Average\n[2]Remarks\n[3]Roomvise Review\n[4]Full Review")
+    print("[1] Average\n[2] Remarks\n[3] Full Review\n[Press any other key to exit]")
     getTypeReview = input("Enter what kindda rev ya want?\n-->")
     if(getTypeReview == "1"):
         print("Showing the average data")
@@ -243,22 +256,23 @@ def viewAdminReviews():
             print("Guests Havnt done any reviews :/\n")
         for eachAvgReview in rawRemarkRevDataSql:
             multipleRemarks.append((eachAvgReview[1],eachAvgReview[2]))#Append as a list of tuple
-        print(multipleRemarks)
+        #print(multipleRemarks)
         headers = ["Guest","remarks"]
         print(tabulate.tabulate(multipleRemarks, headers, tablefmt="rounded_grid"))
-    #so the sa can choose which type of rev they want avg, only the overall or the remars or  full
-    # sql_cursor.execute(
-    #     "SELECT dateAndTime,room,meal,hospitality,washroom,overall,remarks FROM reviews WHERE sa_uid = '{}';".format(listedGetDetailsFromUser[1])
-    #     )
-    # rawGuestDataSql = sql_cursor.fetchall()
-    # if(bool(rawGuestDataSql) == False):
-    #     print("You Havnt done any reviews\n")
-    #     print("Do some reviews to show up here")
-    # for eachReview in rawGuestDataSql:
-    #     multipleRevList.append(eachReview)#Append as a list of tuple
-    # print(multipleRevList)
-    # headers = ['Date and time',"Room facilities","Meal","Friendliness","washroom","overall","remarks"]
-    # print(tabulate.tabulate(multipleRevList, headers, tablefmt="rounded_grid"))
+    elif(getTypeReview == "3"):
+        fullReviewFromDB = []
+        sql_cursor.execute(
+            "SELECT userdetails.name,reviews.dateAndTime,reviews.room,reviews.meal,reviews.hospitality,reviews.washroom,reviews.overall,reviews.remarks  FROM reviews  INNER JOIN userdetails ON reviews.user_uid = userdetails.user_uid WHERE reviews.sa_uid = '{}';".format(listedGetDetailsFromUser[1])
+            )
+        rawGuestDataSql = sql_cursor.fetchall()
+        if(bool(rawGuestDataSql) == False):
+            print("You Havnt done any reviews\n")
+            print("Do some reviews to show up here")
+        for eachReview in rawGuestDataSql:
+            fullReviewFromDB.append(eachReview)#Append as a list of tuple
+        #print(fullReviewFromDB)
+        headers = ['User','Date and time',"Room facilities","Meal","Friendliness","washroom","overall","remarks"]
+        print(tabulate.tabulate(fullReviewFromDB, headers, tablefmt="rounded_grid"))
 
 #------------Guest Functions -------------
 def giveReviewsGuest():
@@ -363,8 +377,41 @@ def guest_dashboard():
 #the housekeeper dashboard
 #house keepers should also be able to give reviews
 def hs_kep_dashboard():
-    print("Housekeeping Dashboard")
-
+    viewHkDashboard = True
+    while viewHkDashboard:
+        print("Housekeeping Dashboard")
+        print("(1)Remarks\n(2)View Full Reviews\n(3)View Assigned Room\n[Press any other key to exit]\n")
+        getHkMenuStuff = input("Enter your selction\n-->")
+        if(getHkMenuStuff == "1"):
+            multipleRemarks =[]
+            print("Remarks")
+            sql_cursor.execute("SELECT reviews.user_uid,userdetails.username,reviews.remarks FROM reviews INNER JOIN userdetails ON reviews.user_uid=userdetails.user_uid WHERE reviews.hk_uid = '{}';".format(listedGetDetailsFromUser[1]))
+            rawRemarkRevDataSql = sql_cursor.fetchall()
+            if(bool(rawRemarkRevDataSql) == False):
+                print("Guests Havnt done any reviews :/\n")
+            for eachAvgReview in rawRemarkRevDataSql:
+                multipleRemarks.append((eachAvgReview[1],eachAvgReview[2]))#Append as a list of tuple
+            #print(multipleRemarks)
+            headers = ["Guest","remarks"]
+            print(tabulate.tabulate(multipleRemarks, headers, tablefmt="rounded_grid"))
+        elif(getHkMenuStuff == "2"):
+            fullReviewFromDB = []
+            sql_cursor.execute(
+                "SELECT userdetails.name,reviews.dateAndTime,reviews.room,reviews.meal,reviews.hospitality,reviews.washroom,reviews.overall,reviews.remarks  FROM reviews  INNER JOIN userdetails ON reviews.user_uid = userdetails.user_uid WHERE reviews.hk_uid = '{}';".format(listedGetDetailsFromUser[1])
+                )
+            rawGuestDataSql = sql_cursor.fetchall()
+            if(bool(rawGuestDataSql) == False):
+                print("You Havnt done any reviews\n")
+                print("Do some reviews to show up here")
+            for eachReview in rawGuestDataSql:
+                fullReviewFromDB.append(eachReview)#Append as a list of tuple
+            #print(fullReviewFromDB)
+            headers = ['User','Date and time',"Room facilities","Meal","Friendliness","washroom","overall","remarks"]
+            print(tabulate.tabulate(fullReviewFromDB, headers, tablefmt="rounded_grid"))
+        elif(getHkMenuStuff == "3"):
+            sql_cursor.fetchall("SELECT place_name FROM hslocations WHERE hk_uid = '{}'".format(listedGetDetailsFromUser[1]))
+        else:
+            viewHkDashboard = False
 #super admin dashboard
 # they get the statistics of how the housekeepers perform
 #this is also wher they get to create housekeepers
@@ -380,7 +427,7 @@ def s_admin_dashboard():
         elif(getMenuInput == "2"):
             addRemoveViewHouseKeepers()
         elif(getMenuInput == "3"):
-            addOrRemoveRooms()
+            addRemoveViewRooms()
         elif(getMenuInput == "4"):
             sql_cursor.close()
             connector.close()
