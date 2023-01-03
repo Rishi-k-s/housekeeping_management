@@ -142,3 +142,6 @@ DELETE FROM reviews;
 
 --@block
 DELETE FROM hslocations;
+
+--@block
+SELECT place_name FROM hslocations WHERE hk_uid = '1062b0ca-8b8f-11ed-ab30-5811227fcdd6';

@@ -409,7 +409,12 @@ def hs_kep_dashboard():
             headers = ['User','Date and time',"Room facilities","Meal","Friendliness","washroom","overall","remarks"]
             print(tabulate.tabulate(fullReviewFromDB, headers, tablefmt="rounded_grid"))
         elif(getHkMenuStuff == "3"):
-            sql_cursor.fetchall("SELECT place_name FROM hslocations WHERE hk_uid = '{}'".format(listedGetDetailsFromUser[1]))
+            sql_cursor.execute("SELECT place_name FROM hslocations WHERE hk_uid = '{}';".format(listedGetDetailsFromUser[1]))
+            getRoomNameFromDB = sql_cursor.fetchall()[0][0]
+            print("---Your assigned Room is----")
+            print(getRoomNameFromDB)
+            print("----------------------------")
+            
         else:
             viewHkDashboard = False
 #super admin dashboard
