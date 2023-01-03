@@ -192,9 +192,18 @@ def main(argv):
 # # print the golden ratio
 # print(ratio)
 
-a = "2222"
-f = ["Year ,0,2 at All the best"]
-a = a.split("2")
-print(a)
-b = a[0] + ". " +a[1] +". "+a[3]
-print(b)
+# a = "2222"
+# f = ["Year ,0,2 at All the best"]
+# a = a.split("2")
+# print(a)
+# b = a[0] + ". " +a[1] +". "+a[3]
+# print(b)
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.array(["A", "B", "C", "D"])
+y = np.array([3, 8, 1, 10])
+
+plt.bar(x,y)
+plt.show()

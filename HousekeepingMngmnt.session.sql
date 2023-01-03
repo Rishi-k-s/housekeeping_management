@@ -34,6 +34,9 @@ SELECT dateAndTime,room,meal,hospitality,washroom,overall,remarks FROM reviews;
 SELECT * FROM reviews;
 
 --@block
+SELECT * FROM hslocations;
+
+--@block
 SHOW INDEX FROM userdetails
 
 --@block
@@ -115,3 +118,21 @@ FROM reviews
 INNER JOIN userdetails
 ON reviews.user_uid=userdetails.user_uid
 WHERE reviews.hk_uid ="92f92be3-7ece-11ed-b765-5811227fcdd6";
+
+
+--@block
+SELECT userdetails.name,hslocations.place_name
+FROM userdetails
+INNER JOIN hslocations
+ON userdetails.user_uid =hslocations.hk_uid
+WHERE userdetails.sa_uid = '7088951b-8aa2-11ed-ab30-5811227fcdd6';
+
+--@block
+DELETE FROM userdetails;
+
+--@block
+DELETE FROM reviews;
+
+
+--@block
+DELETE FROM hslocations;
