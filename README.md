@@ -77,5 +77,5 @@ First u have to create the databases in MySql by these Commands:
     hk_uid VARCHAR(255),
     place_name VARCHAR(255) UNIQUE);
 
-## Now Run the code with python and :)
+## Now Run the code(main.py) with python and :)
 # Made with ❤️ by Rishi, Hamda, Leen, Sidhan, Ziya 
