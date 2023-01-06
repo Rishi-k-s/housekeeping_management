@@ -45,7 +45,7 @@ To manage guest reviews effectively, hotels can use a software solution that aut
 
 # Installation
 First u have to create the databases in MySql by these Commands:
-1.For the reviews
+1.For The Reviews
 
     CREATE  TABLE reviews(
     review_uid VARCHAR(255) PRIMARY  KEY,
@@ -77,5 +77,5 @@ First u have to create the databases in MySql by these Commands:
     hk_uid VARCHAR(255),
     place_name VARCHAR(255) UNIQUE);
 
-## Now Run the code and :)
+## Now Run the code with python and :)
 # Made with ❤️ by Rishi, Hamda, Leen, Sidhan, Ziya 
