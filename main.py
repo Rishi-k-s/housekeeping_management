@@ -15,6 +15,14 @@ connector = mysql.connector.connect(
     autocommit = True,
 )
 
+# connector = mysql.connector.connect(
+#     host = "sql.freedb.tech",
+#     username = "freedb_main_user2",
+#     password = "GcFhae@3x9j4h5V",
+#     database = "freedb_housekeepingmngmnt",
+#     autocommit = True,
+# )
+
 
 if(connector.is_connected()):
     print("Database connected")
@@ -161,7 +169,7 @@ def addRemoveViewHouseKeepers():
     print("(1)Add Housekeeper\n(2)Remove Housekeeper\n(3)View Housekeepers")
     getChooseHkFunc = input("-->")
     if(getChooseHkFunc == "1"):
-        print("~ Craete Housekeeper Account(s) ~")
+        print("~ Create Housekeeper Account(s) ~")
         get_Name_user = input("Enter Housekeeper Name: ")
         print("\nAdding {} as Housekeeper".format(get_Name_user))
         setUserRole = "HK"
@@ -316,6 +324,11 @@ def giveReviewsGuest():
 
     reviewList = reviewList+[getRevRoom,getRevMeal,getRevHospitality,getRevWashroom,getRevOverall,getRevRemarks]
     # print(reviewList)
+    print(
+        reviewList[0],reviewList[1],reviewList[2],reviewList[3],
+        reviewList[4],reviewList[5],reviewList[6],reviewList[7],
+        reviewList[8],reviewList[9],reviewList[10]
+    )
     sql_cursor.execute(
         "INSERT INTO reviews VALUES (UUID(),'{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}') ;"
         .format(
