@@ -47,6 +47,7 @@ To manage guest reviews effectively, hotels can use a software solution that aut
 First u have to create the databases in MySql by these Commands:
 1.For The Reviews
 
+
     CREATE  TABLE reviews(
     review_uid VARCHAR(255) PRIMARY  KEY,
     hk_uid VARCHAR(255),
