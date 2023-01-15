@@ -44,7 +44,9 @@ To manage guest reviews effectively, hotels can use a software solution that aut
 	Once the review is done the Admin and housekeepers can view and analyze it through the admin dashboard
 
 # Installation
-First u have to create the databases in MySql by these Commands:
+First u have to create the databases in MySql by these Commands
+
+
 1.For The Reviews
 
 
